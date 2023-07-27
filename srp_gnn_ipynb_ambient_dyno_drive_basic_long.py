@@ -43,7 +43,7 @@ files = [file for file in os.listdir('/content/data') if 'dyno' in file]
 files
 
 """## Load Training Data
- we only have one file, "ambient_dyno_drive_benign_anomaly.log," in the folder, there is no need to perform aggregation since there is no multiple file merging required.
+ we only have one file, "ambient_dyno_drive_basic_long.log," in the folder, there is no need to perform aggregation since there is no multiple file merging required.
 
 calling out make_can_df
 """
