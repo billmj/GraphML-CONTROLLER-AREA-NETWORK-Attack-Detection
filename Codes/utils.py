@@ -114,5 +114,23 @@ def create_directed_graphs(df, mapped_capture):
         fig = go.Figure(data=[*edge_traces, node_trace],
                         layout=go.Layout(
                             showlegend=False,
-                            hovermode='closest',
-                            margin=dict(b=0, l=0
+                                                        hovermode='closest',
+                            margin=dict(b=0, l=0, r=0, t=40),
+                            title=dict(
+                                text=time_slice_label,
+                                x=0.5,
+                                xanchor='center',
+                                font=dict(
+                                    size=14,
+                                    color='black'
+                                )
+                            ),
+                            xaxis=dict(showgrid=False, zeroline=False),
+                            yaxis=dict(showgrid=False, zeroline=False),
+                            annotations=arrow_annotations
+                        )
+        )
+        fig.show()
+
+        input("Press Enter to continue...")
+        clear_output(wait=True)
