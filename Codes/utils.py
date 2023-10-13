@@ -1,7 +1,10 @@
 import pandas as pd
 import numpy as np
 from CAN_objects.capture import MappedCapture
+import networkx as nx
+import matplotlib.pyplot as plt
 
+# Utility function to extract the mean and standard deviation for each column in a DataFrame
 def extract_mean_std(df):
     """
     Extract the mean and standard deviation for each column in a DataFrame.
@@ -14,6 +17,7 @@ def extract_mean_std(df):
     """
     return [df.mean().values, df.std().values]
 
+# Utility function to extract the mean and standard deviation for a specific ID within a time window
 def extract_mean_std_for_id(node_id, start_time, end_time, mapped_capture):
     """
     Extract the mean and standard deviation for a specific ID within a time window.
@@ -40,6 +44,7 @@ def extract_mean_std_for_id(node_id, start_time, end_time, mapped_capture):
         mean_std_dict[f"{col}_std"] = round(std, 2)
     return mean_std_dict
 
+# Utility function to extract signal data for a specific ID within customizable time windows
 def extract_signal_data_for_id(node_id, mapped_capture, window_length=10):
     """
     Extract signal data for a specific ID within customizable time windows.
@@ -70,6 +75,7 @@ def extract_signal_data_for_id(node_id, mapped_capture, window_length=10):
     df.columns = pd.MultiIndex.from_tuples(df.columns)
     return df
 
+# Utility function to extract signal data for a list of IDs within customizable time windows
 def extract_signal_data_for_all_ids(ids_to_explore, mapped_capture, window_length=10):
     """
     Extract signal data for a list of IDs within customizable time windows.
@@ -87,3 +93,55 @@ def extract_signal_data_for_all_ids(ids_to_explore, mapped_capture, window_lengt
         signal_data = extract_signal_data_for_id(id_to_explore, mapped_capture, window_length)
         signal_data_dict[id_to_explore] = signal_data
     return signal_data_dict
+
+# Utility function to create a DataFrame from a CAN log file with customizable time slice duration
+def make_can_df_with_time_slices(log_filepath, time_slice_duration=10.0):
+    """
+    Create a DataFrame from a CAN log file and divide it into time slices.
+
+    Parameters:
+    log_filepath (str): The path to the CAN log file.
+    time_slice_duration (float): The duration of each time slice in seconds. Default is 10 seconds.
+
+    Returns:
+    pd.DataFrame: A DataFrame containing CAN data.
+    list: A list of tuples containing time slice labels and DataFrames.
+    """
+    can_df = pd.read_fwf(
+        log_filepath, delimiter=' ' + '#' + '(' + ')',
+        skiprows=1, skipfooter=1,
+        usecols=[0, 2, 3],
+        dtype={0: 'float64', 1: str, 2: str},
+        names=['time', 'pid', 'data']
+    )
+
+    can_df.pid = can_df.pid.apply(lambda x: int(x, 16))
+    can_df.data = can_df.data.apply(lambda x: x.zfill(16))  # Pad with 0s on the left for data with dlc < 8
+    can_df.time = can_df.time - can_df.time.min()
+
+    time_slices = create_time_slices(can_df, time_slice_duration)
+
+    return can_df[can_df.pid <= 0x700], time_slices
+
+# Utility function to build graphs for each time slice
+def build_graphs_for_time_slices(time_slices):
+    """
+    Build graphs for each time slice.
+
+    Parameters:
+    time_slices (list): A list of tuples containing time slice labels and DataFrames.
+
+    Returns:
+    tuple: A tuple containing lists of node counts, edge counts, and graphs for each time slice.
+    """
+    nodes_counts = []
+    edges_counts = []
+    graphs = []
+
+    for label, time_slice_df in time_slices:
+        nodes_count, edges_count, G = build_graphs(time_slice_df)
+        nodes_counts.append(nodes_count)
+        edges_counts.append(edges_count)
+        graphs.append((label, G))
+
+    return nodes_counts, edges_counts, graphs
