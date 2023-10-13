@@ -1,5 +1,9 @@
 import pandas as pd
 import numpy as np
+import os 
+import sys
+import matplotlib.pyplot as plt
+from collections import defaultdict
 from CAN_objects.capture import MappedCapture
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -144,4 +148,30 @@ def build_graphs_for_time_slices(time_slices):
         edges_counts.append(edges_count)
         graphs.append((label, G))
 
-    return nodes_counts, edges_counts, graphs
+    return nodes_counts, edges_counts, 
+    
+
+def make_can_df(log_filepath, time_slice_duration=10.0):
+    # Create a DataFrame from a CAN log file with customizable time slice duration
+    pass
+
+def extract_data_per_time_window(signal_list, time_windows, window_length=10):
+    # Extract data per time window with a customizable window length
+    pass
+
+def calculate_mean_and_std(df):
+    # Calculate mean and std for each column in a DataFrame
+    pass
+
+def calculate_average_embeddings(graphs, embedding_dim):
+    # Calculate average embeddings from a list of graphs
+    pass
+
+def apply_tsne(embeddings_array, n_components=2, random_state=42):
+    # Apply t-SNE on embeddings
+    pass
+
+def plot_tsne_representation(embeddings, labels):
+    # Plot t-SNE representation
+    pass
+
