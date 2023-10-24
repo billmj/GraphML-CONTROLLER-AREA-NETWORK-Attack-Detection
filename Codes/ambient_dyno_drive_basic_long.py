@@ -55,9 +55,10 @@ def main():
     # Display the last few rows of the DataFrame
     print(df_benign.iloc[-5:])
     
-    # Save the DataFrame to a CSV file
-    save_dataframe_to_csv(df_benign, args.window_size, args.offset)
     
+    # Save the DataFrame to a CSV file
+    save_dataframe_to_csv(df_benign, args.window_size, args.offset, args.log_filepath)
+
     # Save the combined embeddings to disk
     with open("combined_node_embeddings.pkl", "wb") as f:
         pickle.dump(all_combined_node_embeddings, f)
