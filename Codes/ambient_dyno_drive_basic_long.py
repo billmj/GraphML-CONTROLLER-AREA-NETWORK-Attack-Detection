@@ -45,17 +45,20 @@ def generate_graphs_from_data(df, window_size, offset):
                 G[source][target]['weight'] += 1
             else:
                 G.add_edge(source, target, weight=1)
-        
+
+        if G.number_of_nodes() == 0 or G.number_of_edges() == 0:
+            print(f"Graph for slice {i+1} is empty or has no edges!")
+
         all_graphs.append(G)
-    
 
     return all_graphs
 
+
 def generate_node_embeddings(all_graphs):
     all_node_embeddings = []
-    for G in tqdm(all_graphs, desc="Generating Node Embeddings"):
-        node2vec = Node2Vec(G, dimensions=64, walk_length=5, num_walks=10, workers=20, p=1.5, q=0.5)
-        model = node2vec.fit(window=10, min_count=1, batch_words=14)
+    for idx, G in enumerate(tqdm(all_graphs, desc="Generating Node Embeddings")):
+        node2vec = Node2Vec(G, dimensions=64, walk_length=15, num_walks=100, workers=19, p=1.5, q=0.5)
+        model = node2vec.fit(window=10, min_count=1, batch_words=7)
         
         node_embeddings = {}
         for node in G.nodes():
@@ -65,9 +68,12 @@ def generate_node_embeddings(all_graphs):
             else:
                 node_embeddings[node] = np.zeros(model.vector_size)
         
+        print(f"Processed graph {idx+1}: Nodes - {G.number_of_nodes()}, Edges - {G.number_of_edges()}")
+
         all_node_embeddings.append(node_embeddings)
     
     return all_node_embeddings
+
 
 def load_mapped_capture():
     # Define the file path for the CAN capture
@@ -130,6 +136,183 @@ def process_dataframe(df, window_size, offset):
         time_slice_df = df_sorted[(df_sorted['time'] >= start_time) & (df_sorted['time'] < end_time)]
         print(f"{time_slice_label}\n{time_slice_df}\n")
 
+def combine_embeddings_with_attributes(all_graphs, all_node_embeddings, time_slice_duration, mapped_capture):
+    all_combined_node_embeddings = []
+
+    # Calculate the maximum number of attributes across all nodes and all graphs
+    max_attributes = max(
+        [len(extract_mean_std_for_id(node, idx * time_slice_duration, (idx + 1) * time_slice_duration, mapped_capture))
+         for idx, graph in enumerate(all_graphs)
+         for node in graph.nodes()]
+    )
+
+    # Iterate over all graphs and their index
+    for idx, G in tqdm(enumerate(all_graphs), desc="Combining Node Embeddings with Attributes"):
+        current_embeddings = all_node_embeddings[idx]
+        
+        # Calculate start_time and end_time based on the current graph index (idx)
+        start_time = idx * time_slice_duration
+        end_time = (idx + 1) * time_slice_duration
+        
+        combined_embeddings = {}
+        for node in G.nodes():
+            # Get node2vec embedding for the node
+            node_emb = current_embeddings[node]
+            
+            # Extract mean and std attributes using the mean and std function
+            mean_std_dict = extract_mean_std_for_id(node, start_time, end_time, mapped_capture)
+            
+            # Ensure the node attribute vector is of consistent length
+            attributes = list(mean_std_dict.values())
+            attributes += [0] * (max_attributes - len(attributes))
+            
+            # Combine node embeddings and attributes
+            combined_embedding = np.concatenate([node_emb, np.array(attributes)])
+            
+            combined_embeddings[node] = combined_embedding
+
+        all_combined_node_embeddings.append(combined_embeddings)
+
+    return all_combined_node_embeddings
+
+
+def display_combined_embeddings(embeddings, num_to_display=5):
+    """
+    Display the combined embeddings for the specified number of nodes.
+
+    Parameters:
+    - embeddings: The combined node embeddings.
+    - num_to_display: The number of nodes for which to display the embeddings.
+    """
+    for node, embedding in list(embeddings.items())[:num_to_display]:
+        print(f"Node: {node}\nEmbedding: {embedding}\n")
+        
+def find_node_with_highest_signals(mapped_capture):
+    """
+    Find and return the node with the highest number of signals from the mapped_capture object.
+
+    Parameters:
+    - mapped_capture: The MappedCapture object containing the data.
+
+    Returns:
+    - node_with_highest_signals: The node ID with the highest number of signals.
+    - highest_signal_count: The highest signal count.
+    """
+    # Initialize variables to keep track of the node with the highest number of signals
+    highest_signal_count = 0
+    node_with_highest_signals = None
+
+    # Iterate through the node IDs
+    for node_id in mapped_capture.mapped_payload_dict.keys():
+        # Get the mapped payload for the current node
+        mp = mapped_capture.mapped_payload_dict[node_id]
+        
+        # Count the number of signals for this node
+        signal_count = len(mp.signal_list)
+        
+        # Check if this node has more signals than the current highest count
+        if signal_count > highest_signal_count:
+            highest_signal_count = signal_count
+            node_with_highest_signals = node_id
+
+    return node_with_highest_signals, highest_signal_count
+
+def compute_average_embeddings(all_combined_node_embeddings, highest_signal_count):
+    """
+    Compute the average embeddings for each graph based on the combined node embeddings.
+
+    Parameters:
+    - all_combined_node_embeddings: List of dictionaries containing combined node embeddings for each graph.
+    - highest_signal_count: Integer indicating the highest number of signals across all nodes.
+
+    Returns:
+    - concatenated_embeddings: Dictionary containing average embeddings for each graph.
+    """
+    # Calculate the new dimension based on 64 + (2 attributes * highest number of signals)
+    new_dimension = 64 + (2 * highest_signal_count)
+
+    # Initialize a dictionary to store concatenated embeddings
+    concatenated_embeddings = {}
+
+    # Iterate through all graphs in the capture
+    for graph_embeddings in all_combined_node_embeddings:
+        # Initialize variables to accumulate embeddings and count nodes
+        total_embeddings = np.zeros((new_dimension,))
+        num_nodes = 0
+
+        # Iterate through node embeddings in the current graph
+        for node_id, node_embedding in graph_embeddings.items():
+            # Pad node embeddings to the new dimension
+            padded_embeddings = np.pad(node_embedding, (0, new_dimension - len(node_embedding)), mode='constant')
+            
+            # Accumulate the padded embeddings
+            total_embeddings += padded_embeddings
+            num_nodes += 1
+
+        # Calculate average embeddings for the current graph
+        if num_nodes > 0:
+            average_embeddings = total_embeddings / num_nodes
+        else:
+            # Handle the case where there are no nodes in the graph
+            average_embeddings = np.zeros((new_dimension,))
+        
+        # Store the average embeddings in the dictionary
+        concatenated_embeddings[len(concatenated_embeddings)] = average_embeddings
+
+    return concatenated_embeddings
+
+        
+
+def get_first_graph_embedding(concatenated_embeddings):
+    """
+    Access the embeddings for the first graph.
+    
+    Parameters:
+    - concatenated_embeddings: Dictionary containing the embeddings for each graph.
+    
+    Returns:
+    - first_graph_embedding: Embeddings for the first graph.
+    """
+    return concatenated_embeddings[0]
+
+def create_dataframe_from_embeddings(concatenated_embeddings):
+    """
+    Create a DataFrame from the concatenated embeddings.
+    
+    Parameters:
+    - concatenated_embeddings: Dictionary containing the embeddings for each graph.
+    
+    Returns:
+    - df_benign: DataFrame with embeddings and labels.
+    """
+    # Create a list to store the embeddings and labels
+    data = []
+
+    # Iterate through the benign embeddings
+    for graph_id, embedding in concatenated_embeddings.items():
+        # Append the embedding and label to the data list
+        data.append((embedding, '0'))
+
+    # Create a DataFrame
+    df_benign = pd.DataFrame(data, columns=['Embedding', 'Label'])
+
+    return df_benign
+
+
+
+def save_dataframe_to_csv(df, window_size, offset, prefix="benign"):
+    """
+    Save the given dataframe to a CSV file. The filename will be constructed using
+    the given prefix and the window_size and offset parameters.
+
+    Parameters:
+    - df: DataFrame to save.
+    - window_size: Window size used in the experiment.
+    - offset: Offset used in the experiment.
+    - prefix: Prefix for the filename.
+    """
+    filename = f"{prefix}_window_size_{window_size}_offset_{offset}.csv"
+    df.to_csv(filename, index=False)
 
 def main():
     parser = argparse.ArgumentParser(description='Process CAN log data and generate node embeddings.')
@@ -138,19 +321,58 @@ def main():
     parser.add_argument('log_filepath', type=str, help='Path to the CAN log file.')
     args = parser.parse_args()
 
+    # Read the CAN log and process it
     df = make_can_df(args.log_filepath)
-    process_dataframe(df, args.window_size, args.offset)  # If you want to print slices of the dataframe
-    
+    process_dataframe(df, args.window_size, args.offset)
+
     # Generate graphs from data
     all_graphs = generate_graphs_from_data(df, args.window_size, args.offset)
-    
+
     # Generate node embeddings
     all_node_embeddings = generate_node_embeddings(all_graphs)
 
-    # Save the node embeddings to disk
-    with open("node_embeddings.pkl", "wb") as f:
-        pickle.dump(all_node_embeddings, f)
+    # Load mapped_capture for attribute extraction
+    mapped_capture = load_mapped_capture()
+
+    # Combine the embeddings with attributes
+    all_combined_node_embeddings = combine_embeddings_with_attributes(all_graphs, all_node_embeddings, args.window_size, mapped_capture)
+
+    # Display the first few combined embeddings for the first graph
+    print("Displaying first few combined embeddings for the first graph:")
+    display_combined_embeddings(all_combined_node_embeddings[0])
+
+    # Find the node with the highest number of signals
+    node, highest_signal_count = find_node_with_highest_signals(mapped_capture)
+    print(f"Node with Highest Signals (Node ID, Signal Count): ({node}, {highest_signal_count})")
+    
+    # Compute average embeddings
+    concatenated_embeddings = compute_average_embeddings(all_combined_node_embeddings, highest_signal_count)
+
+    # Print the number of graphs processed and the keys in concatenated_embeddings
+    print("Number of graphs processed:", len(concatenated_embeddings))
+    print("Keys in concatenated_embeddings:", list(concatenated_embeddings.keys()))
+
+    
+
+    # Use the function to create the DataFrame
+    df_benign = create_dataframe_from_embeddings(concatenated_embeddings)
+    
+    # Display the first few rows of the DataFrame
+    print(df_benign.head())
+
+    # Display the last few rows of the DataFrame
+    print(df_benign.iloc[-5:])
+    
+    # Save the DataFrame to a CSV file
+    save_dataframe_to_csv(df_benign, args.window_size, args.offset)
+    
+    # Save the combined embeddings to disk
+    with open("combined_node_embeddings.pkl", "wb") as f:
+        pickle.dump(all_combined_node_embeddings, f)
 
 if __name__ == "__main__":
     main()
+
+
+
 
