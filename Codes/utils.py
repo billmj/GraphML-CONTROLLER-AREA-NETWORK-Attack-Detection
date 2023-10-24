@@ -95,16 +95,21 @@ def get_first_graph_embedding(concatenated_embeddings):
     """
     return concatenated_embeddings[0]
 
-def save_dataframe_to_csv(df, window_size, offset, prefix="benign"):
+def save_dataframe_to_csv(df, window_size, offset, log_filename, prefix="benign"):
     """
     Save the given dataframe to a CSV file. The filename will be constructed using
-    the given prefix and the window_size and offset parameters.
+    the given prefix, the name of the log file, and the window_size and offset parameters.
 
     Parameters:
     - df: DataFrame to save.
     - window_size: Window size used in the experiment.
     - offset: Offset used in the experiment.
+    - log_filename: Name of the log file being processed.
     - prefix: Prefix for the filename.
     """
-    filename = f"{prefix}_window_size_{window_size}_offset_{offset}.csv"
+    # Extract the base name of the log file without the extension
+    base_log_filename = os.path.basename(log_filename).split('.')[0]
+    
+    filename = f"{prefix}_{base_log_filename}_window_size_{window_size}_offset_{offset}.csv"
     df.to_csv(filename, index=False)
+
