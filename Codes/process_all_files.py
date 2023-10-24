@@ -2,10 +2,10 @@ import subprocess
 import os
 
 def main():
-    # The directory where your log files are located
+    # The directory where our log files are located
     log_directory = "C:\\Users\\willi\\OneDrive\\Desktop\\Research\\oak_ridge_in_vehicle\\road\\ambient\\"
 
-    # List of log files you want to process
+    # List of log files we want to process
     log_files = [
         "ambient_dyno_drive_basic_short.log",
         "ambient_dyno_drive_benign_anomaly.log",
