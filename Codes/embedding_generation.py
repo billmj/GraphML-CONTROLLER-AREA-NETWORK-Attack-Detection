@@ -42,24 +42,29 @@ def combine_embeddings_with_attributes(all_graphs, all_node_embeddings, time_sli
         
         combined_embeddings = {}
         for node in G.nodes():
-            # Get node2vec embedding for the node
-            node_emb = current_embeddings[node]
-            
-            # Extract mean and std attributes using the mean and std function
-            mean_std_dict = extract_mean_std_for_id(node, start_time, end_time, mapped_capture)
-            
-            # Ensure the node attribute vector is of consistent length
-            attributes = list(mean_std_dict.values())
-            attributes += [0] * (max_attributes - len(attributes))
-            
-            # Combine node embeddings and attributes
-            combined_embedding = np.concatenate([node_emb, np.array(attributes)])
-            
-            combined_embeddings[node] = combined_embedding
+            if node == 0:  # Check if node ID is 0
+                # Provide default values (zeros) for node with ID 0
+                combined_embeddings[node] = [0] * (len(current_embeddings[node]) + max_attributes)
+            else:
+                # Get node2vec embedding for the node
+                node_emb = current_embeddings[node]
+                
+                # Extract mean and std attributes using the mean and std function
+                mean_std_dict = extract_mean_std_for_id(node, start_time, end_time, mapped_capture)
+                
+                # Ensure the node attribute vector is of consistent length
+                attributes = list(mean_std_dict.values())
+                attributes += [0] * (max_attributes - len(attributes))
+                
+                # Combine node embeddings and attributes
+                combined_embedding = np.concatenate([node_emb, np.array(attributes)])
+                
+                combined_embeddings[node] = combined_embedding
 
         all_combined_node_embeddings.append(combined_embeddings)
 
     return all_combined_node_embeddings
+
 
 
 def compute_average_embeddings(all_combined_node_embeddings, highest_signal_count):
