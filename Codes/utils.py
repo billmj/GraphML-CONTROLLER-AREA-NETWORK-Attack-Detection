@@ -99,7 +99,7 @@ def get_first_graph_embedding(concatenated_embeddings):
     """
     return concatenated_embeddings[0]
 
-def save_dataframe_to_csv(df, window_size, offset, log_filename, prefix="benign"):
+def save_dataframe_to_csv(df, window_size, offset, log_filename, prefix="attack"):
     """
     Save the given dataframe to a CSV file. The filename will be constructed using
     the given prefix, the name of the log file, and the window_size and offset parameters.
