@@ -45,7 +45,8 @@ def main():
     print("Keys in concatenated_embeddings:", list(concatenated_embeddings.keys()))
 
     # Use the function to create the DataFrame
-    df_benign = create_dataframe_from_embeddings(concatenated_embeddings)
+    df_benign = create_dataframe_from_embeddings(concatenated_embeddings, args.log_filepath, args.offset)
+
 
     # Display the first few rows of the DataFrame
     print(df_benign.head())
