@@ -111,28 +111,56 @@ def compute_average_embeddings(all_combined_node_embeddings, highest_signal_coun
 
     return concatenated_embeddings
 
-def create_dataframe_from_embeddings(concatenated_embeddings):
+def create_dataframe_from_embeddings(concatenated_embeddings, log_filename, offset):
     """
     Create a DataFrame from the concatenated embeddings.
     
     Parameters:
     - concatenated_embeddings: Dictionary containing the embeddings for each graph.
+    - log_filename: Name of the log file being processed.
+    - offset: Offset used in the experiment.
     
     Returns:
-    - df_benign: DataFrame with embeddings and labels.
+    - df_attack: DataFrame with embeddings and labels.
     """
+    # Attack intervals for attack log files
+    attack_intervals = {
+        "correlated_signal_attack_1_masquerade.log": (9.191851, 30.050109),
+        "correlated_signal_attack_2_masquerade.log": (6.830477, 28.225908),
+        "correlated_signal_attack_3_masquerade.log": (4.318482, 16.95706)
+    }
+    
+    # Extract the base filename from the full path
+    filename_only = os.path.basename(log_filename)
+    
+    # Check if the file is in the attack intervals dictionary
+    if filename_only in attack_intervals:
+        start_attack, end_attack = attack_intervals[filename_only]
+    else:  # If it's benign or not in the dictionary, set the attack interval to an impossible range
+        start_attack, end_attack = -1, -1
+    
     # Create a list to store the embeddings and labels
     data = []
 
-    # Iterate through the benign embeddings
+    # Iterate through the embeddings
     for graph_id, embedding in concatenated_embeddings.items():
+        # Calculate the start and end times of the current time slice
+        start_time = graph_id * offset
+        end_time = start_time + 4  # window_size is 4 seconds
+        
+        # Label the data as '1' if it falls within the attack interval, and '0' otherwise
+        label = '1' if start_attack <= start_time <= end_attack or start_attack <= end_time <= end_attack else '0'
+        
         # Append the embedding and label to the data list
-        data.append((embedding, '0'))
+        data.append((embedding, label))
 
     # Create a DataFrame
-    df_benign = pd.DataFrame(data, columns=['Embedding', 'Label'])
+    df_attack = pd.DataFrame(data, columns=['Embedding', 'Label'])
 
-    return df_benign
+    return df_attack
+
+
+
 
 def display_combined_embeddings(embeddings, num_to_display=5):
     """
