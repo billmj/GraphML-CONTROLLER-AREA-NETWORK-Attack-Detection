@@ -1,3 +1,4 @@
+#process_all_files
 import subprocess
 import os
 
@@ -7,6 +8,7 @@ def main():
 
     # Dictionary mapping log files to their respective pkl folders
     log_to_pkl = {
+	"ambient_dyno_drive_basic_long.log": "road_ambient_dyno_drive_basic_long_050305_002000",
         "ambient_dyno_drive_basic_short.log": "road_ambient_dyno_drive_basic_short_020822_030640",
         "ambient_dyno_drive_benign_anomaly.log": "road_ambient_dyno_drive_benign_anomaly_030804_082640",
         "ambient_dyno_drive_extended_long.log": "road_ambient_dyno_drive_extended_long_040716_134640",
