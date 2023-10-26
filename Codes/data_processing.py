@@ -35,10 +35,12 @@ def generate_graphs_from_data(df, window_size, offset):
 
         if G.number_of_nodes() == 0 or G.number_of_edges() == 0:
             print(f"Graph for slice {i+1} is empty or has no edges!")
+            G.add_node(0)  # Add a node with value 0 to represent an empty graph
 
         all_graphs.append(G)
 
     return all_graphs
+
 
 def process_dataframe(df, window_size, offset):
     df_sorted = df.sort_values('time')
