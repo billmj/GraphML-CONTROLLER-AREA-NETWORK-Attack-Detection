@@ -5,10 +5,10 @@ from imports import *
 from generalFunctions import unpickle
 from CAN_objects.capture import MappedCapture
 
-def load_mapped_capture():
+def load_mapped_capture(pkl_folder):
     # Define the file path for the CAN capture
     cancap_filepath = os.path.join("C:\\Users\\willi\\Dropbox\\data-cancaptures", 
-                                  "road_ambient_dyno_drive_basic_long_050305_002000", "capture.pkl")
+                                  pkl_folder, "capture.pkl")
     cancap = unpickle(cancap_filepath)
     
     # Define the file path for the ground truth DBC file
@@ -30,6 +30,10 @@ def extract_mean_std_for_id(node_id, start_time, end_time, mapped_capture):
     Returns:
     - mean_std_dict: A dictionary containing the mean and standard deviation for each signal of the node within the specified time window.
     """
+    # If the node_id is 0, return default zero values
+    if node_id == 0:
+        return {'default_mean': 0, 'default_std': 0}
+    
     # Extract the mapped payload for the given ID
     mp = mapped_capture.mapped_payload_dict[node_id]
 
