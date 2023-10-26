@@ -14,9 +14,11 @@ def make_can_df(log_filepath):
     can_df.time = can_df.time - can_df.time.min()
     return can_df[can_df.pid <= 0x700]
 
+from math import ceil
+
 def generate_graphs_from_data(df, window_size, offset):
     all_graphs = []
-    num_slices = int((df['time'].max() - df['time'].min()) / offset)
+    num_slices = ceil((df['time'].max() - df['time'].min()) / offset)
     for i in range(num_slices):
         start_time = df['time'].min() + i * offset
         end_time = start_time + window_size
@@ -38,6 +40,7 @@ def generate_graphs_from_data(df, window_size, offset):
             G.add_node(0)  # Add a node with value 0 to represent an empty graph
 
         all_graphs.append(G)
+        print(f"Processed slice {i+1}/{num_slices}, Graph Nodes: {G.number_of_nodes()}, Graph Edges: {G.number_of_edges()}")
 
     return all_graphs
 
