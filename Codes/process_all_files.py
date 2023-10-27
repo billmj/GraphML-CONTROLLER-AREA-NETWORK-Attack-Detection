@@ -1,8 +1,15 @@
 #process_all_files
 import subprocess
 import os
+import argparse
+
 
 def main():
+    parser = argparse.ArgumentParser(description='Process multiple CAN log files.')
+    parser.add_argument('--window-size', type=float, required=True, help='Size of the window for slicing data.')
+    parser.add_argument('--offset', type=float, required=True, help='Offset for slicing data.')
+    args = parser.parse_args()
+
     # The directory where our log files are located
     log_directory = "C:\\Users\\willi\\OneDrive\\Desktop\\Research\\oak_ridge_in_vehicle\\road\\ambient\\"
 
@@ -27,7 +34,8 @@ def main():
         # Printing the name of the dataset being processed
         print(f"Processing {log_file}...")
         
-        subprocess.run(["python", "ambient_dyno_drive_basic_long.py", "--window-size", "10", "--offset", "10", "--pkl-folder", pkl_folder, log_filepath])
+        subprocess.run(["python", "ambient_dyno_drive_basic_long.py", "--window-size", str(args.window_size), "--offset", str(args.offset), "--pkl-folder", pkl_folder, log_filepath])
+
 
 if __name__ == "__main__":
     main()
