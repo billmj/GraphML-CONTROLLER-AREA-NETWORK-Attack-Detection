@@ -38,7 +38,7 @@ Design and develop a unified framework to detect both fabrication/masquerade att
 
 - **Embedding Generation (`embedding_generation.py`)**:
    - Functions to generate node embeddings using Node2Vec.
-   - Combining embeddings with signal attributes.
+   - Combining embeddings with signal attributes after timeseries siganl extraction.
    - Computing average embeddings and converting them into DataFrames.
 
 - **Imports (`imports.py`)**:
