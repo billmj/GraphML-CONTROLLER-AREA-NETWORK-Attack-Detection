@@ -64,7 +64,9 @@ Design and develop a unified framework to detect both fabrication/masquerade att
 1. To run only the first benign file which is `ambient_dyno_drive_basic_long.log`:
    ```shell
    python ambient_dyno_drive_basic_long.py --window-size 10 --offset 10 --pkl-folder road_ambient_dyno_drive_basic_long_050305_002000 "C:\Users\willi\OneDrive\Desktop\Research\oak_ridge_in_vehicle\road\ambient\ambient_dyno_drive_basic_long.log"
-2. To run all benign files:
-   python process_all_files.py --window-size 4 --offset 4
-3. Process All Correlated Masquerade Attack Files
+2. **To run all benign files:
+   ```shell
+python process_all_files.py --window-size 4 --offset 4
+3. **Process All Correlated Masquerade Attack Files
+   ```shell
 python process_all_correlated_masquerade_attack_files.py --window-size 4 --offset 4
