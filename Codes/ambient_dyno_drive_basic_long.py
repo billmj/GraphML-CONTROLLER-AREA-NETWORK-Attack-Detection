@@ -33,6 +33,9 @@ def main():
     print("Displaying first few combined embeddings for the first graph:")
     display_combined_embeddings(all_combined_node_embeddings[0])
 
+    # Load mapped_capture for attribute extraction using the specified pkl folder
+    mapped_capture = load_mapped_capture(args.pkl_folder)
+
     # Find the node with the highest number of signals
     node, highest_signal_count = find_node_with_highest_signals(mapped_capture)
     print(f"Node with Highest Signals (Node ID, Signal Count): ({node}, {highest_signal_count})")
@@ -45,7 +48,9 @@ def main():
     print("Keys in concatenated_embeddings:", list(concatenated_embeddings.keys()))
 
     # Use the function to create the DataFrame
-    df_benign = create_dataframe_from_embeddings(concatenated_embeddings, args.log_filepath, args.offset)
+    df_benign = create_dataframe_from_embeddings(concatenated_embeddings, args.log_filepath, args.offset, highest_signal_count,           mapped_capture)
+
+
 
 
     # Display the first few rows of the DataFrame
