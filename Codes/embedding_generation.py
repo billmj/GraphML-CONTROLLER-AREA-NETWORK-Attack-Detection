@@ -111,17 +111,19 @@ def compute_average_embeddings(all_combined_node_embeddings, highest_signal_coun
 
     return concatenated_embeddings
 
-def create_dataframe_from_embeddings(concatenated_embeddings, log_filename, offset):
+def create_dataframe_from_embeddings(concatenated_embeddings, log_filepath, offset, highest_signal_count, mapped_capture):
     """
-    Create a DataFrame from the concatenated embeddings.
+    Create a DataFrame from the concatenated embeddings with descriptive column names.
     
     Parameters:
     - concatenated_embeddings: Dictionary containing the embeddings for each graph.
-    - log_filename: Name of the log file being processed.
+    - log_filepath: Name of the log file being processed.
     - offset: Offset used in the experiment.
+    - highest_signal_count: Integer indicating the highest number of signals across all nodes.
+    - mapped_capture: MappedCapture object containing the data.
     
     Returns:
-    - df_attack: DataFrame with embeddings and labels.
+    - df: DataFrame with descriptive column names for embeddings, means, stds, and labels.
     """
     # Attack intervals for attack log files
     attack_intervals = {
@@ -131,7 +133,7 @@ def create_dataframe_from_embeddings(concatenated_embeddings, log_filename, offs
     }
     
     # Extract the base filename from the full path
-    filename_only = os.path.basename(log_filename)
+    filename_only = os.path.basename(log_filepath)
     
     # Check if the file is in the attack intervals dictionary
     if filename_only in attack_intervals:
@@ -139,25 +141,34 @@ def create_dataframe_from_embeddings(concatenated_embeddings, log_filename, offs
     else:  # If it's benign or not in the dictionary, set the attack interval to an impossible range
         start_attack, end_attack = -1, -1
     
-    # Create a list to store the embeddings and labels
-    data = []
+    embedding_dim = 64  # Number of dimensions in the node2vec embedding vector
+    total_dimensions = 64 + (2 * highest_signal_count)  # Total dimensions including means and stds
 
-    # Iterate through the embeddings
+    data = []
     for graph_id, embedding in concatenated_embeddings.items():
         # Calculate the start and end times of the current time slice
         start_time = graph_id * offset
-        end_time = start_time + 4  # window_size is 4 seconds
+        end_time = start_time + 4  # Assuming window_size is 4 seconds
         
         # Label the data as '1' if it falls within the attack interval, and '0' otherwise
         label = '1' if start_attack <= start_time <= end_attack or start_attack <= end_time <= end_attack else '0'
-        
-        # Append the embedding and label to the data list
-        data.append((embedding, label))
 
-    # Create a DataFrame
-    df_attack = pd.DataFrame(data, columns=['Embedding', 'Label'])
+        graph_data = {f"embedding_{i}": embedding[i] for i in range(embedding_dim)}
 
-    return df_attack
+        signal_index = 0
+        for i in range(embedding_dim, total_dimensions, 2):
+            node_id, signals = list(mapped_capture.mapped_payload_dict.items())[signal_index]
+            signal_count = len(signals.signal_list)
+            if signal_count > 0:
+                graph_data[f"mean_ID_{node_id}_sig_{signal_index}"] = embedding[i]
+                graph_data[f"std_ID_{node_id}_sig_{signal_index}"] = embedding[i + 1]
+            signal_index += 1
+
+        graph_data['Label'] = label
+        data.append(graph_data)
+
+    df = pd.DataFrame(data)
+    return df
 
 
 
