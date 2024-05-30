@@ -1,0 +1,10 @@
+setuptools
+bitstring
+seaborn
+cantools
+opencv-python
+helper_functions
+networkx
+tqdm
+scikit-learn
+plotly
