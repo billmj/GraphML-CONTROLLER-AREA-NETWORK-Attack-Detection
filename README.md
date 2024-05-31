@@ -103,33 +103,37 @@ pip install -r requirements.txt
 ```sh
 pip install -r requirements.txt
 
-Getting Started
-Running the Code (the window sizes and offsets can be altered depending on overlaps and time slices)
-Benign Files:
+## Getting Started
 
-    To run only the first benign file, which is ambient_dyno_drive_basic_long.log:
+### Running the Code(the window sizes and offsets can be altered depending on overlaps and time slices)
+#### Benign Files:
+1. **To run only the first benign file, which is `ambient_dyno_drive_basic_long.log`:**
+   ```shell
+   python ambient_dyno_drive_basic_long.py --window-size 10 --offset 10 --pkl-folder road_ambient_dyno_drive_basic_long_050305_002000 "C:\Users\willi\OneDrive\Desktop\Research\oak_ridge_in_vehicle\road\ambient\ambient_dyno_drive_basic_long.log"
 
-    shell
 
-python ambient_dyno_drive_basic_long.py --window-size 10 --offset 10 --pkl-folder road_ambient_dyno_drive_basic_long_050305_002000 "C:\Users\willi\OneDrive\Desktop\Research\oak_ridge_in_vehicle\road\ambient\ambient_dyno_drive_basic_long.log"
+1. **To run all benign files:**
+   ```shell
+   python process_all_files.py --window-size 4 --offset 4
 
-To run all benign files:
 
-```shell
+  
+1. **To process all correlated masquerade attack files:**
+   ```shell
+   python process_all_correlated_masquerade_attack_files.py --window-size 4 --offset 4
 
-python process_all_files.py --window-size 4 --offset 4
 
-To process all correlated masquerade attack files:
+2. **To process all correlated masquerade attack files:
 
-shell
+   ```shell
 
 python process_all_correlated_masquerade_attack_files.py --window-size 4 --offset 4
 
-To process all reverse light off masquerade attack files:
+3. **To process all reverse light off masquerade attack files:
 
-shell
+   ```shell
 
-python process_all_reverse_light_off_attack_files.py --window-size 4 --offset 4
+4.**python process_all_reverse_light_off_attack_files.py --window-size 4 --offset 4
 
 To process all reverse light on masquerade attack files:
 
