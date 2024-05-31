@@ -1,12 +1,12 @@
-# CAN Bus Attack Detection Using GNN
+# Detecting Masquerade Attacks in Controller Area Networks Using Graph Machine Learning
 
 ## Project Overview
 
 ### Main Objective
-Design and develop a unified framework to detect both fabrication/masquerade attacks in the CAN bus that can be deployed on edge devices. We aim to model CAN message streams as CAN graph messages, embedding both node and edge attributes. From this, we can train a model using normal data to detect attacks in the test dataset.
+Design and develop a unified framework to detect both masquerade attacks in the CAN bus that can be deployed on edge devices. We aim to model CAN message streams as CAN graph messages, embedding both node and edge attributes. From this, we can train a model using normal data to detect attacks in the test dataset.
 
 ### Key Questions & Hypothesis
-- **Question:** Can we detect fabrication/masquerade attacks in the CAN bus using a GNN graph classification approach?
+- **Question:** Can we detect masquerade attacks in the CAN bus using a graph ML?
 - **Hypothesis:** 
   1. CAN messages graphs (embedding both node/edge attributes) may characterize normal/attack conditions in CAN.
   2. Fabrication/masquerade attacks scenarios can be framed as a GNN graph classification framework.
@@ -23,7 +23,7 @@ Design and develop a unified framework to detect both fabrication/masquerade att
 
 3. **Phase 3 - Experiments with GNN for Graph Classification**
    - Build training datasets based on CAN graph messages.
-   - Train the GNN framework for IDS in CAN graph messages.
+   - Train the Graph ML framework for IDS in CAN graph messages.
    - Test the trained GNN framework on attack captures and compute classification metrics.
 
 ## Code Structure
@@ -38,7 +38,7 @@ Design and develop a unified framework to detect both fabrication/masquerade att
 
 - **Embedding Generation (`embedding_generation.py`)**:
    - Functions to generate node embeddings using Node2Vec.
-   - Combining embeddings with signal attributes after timeseries siganl extraction.
+   - Combining embeddings with signal attributes after timeseries signal extraction.
    - Computing average embeddings and converting them into DataFrames.
 
 - **Imports (`imports.py`)**:
@@ -56,6 +56,46 @@ Design and develop a unified framework to detect both fabrication/masquerade att
 
 - **Process All Correlated Masquerade Attack Files (`process_all_correlated_masquerade_attack_files.py`)**:
    - Script to process all the correlated masquerade attack files.
+
+- **Process All Reverse Light Off Attack Files (`process_all_reverse_light_off_attack_files.py`)**:
+   - Script to process all reverse light off masquerade attack files.
+   - Reads, preprocesses, and extracts features from the CAN logs.
+   - Generates node embeddings and combines them with signal attributes.
+   - Computes average embeddings and converts them into DataFrames.
+   - Saves the results to disk as CSV and PKL files.
+
+- **Process All Reverse Light On Attack Files (`process_all_reverse_light_on_attack_files.py`)**:
+   - Script to process all reverse light on masquerade attack files.
+   - Similar structure and functionality to the reverse light off attack processing script.
+
+- **Process Max Engine Coolant Temp Attack Masquerade File (`process_max_engine_coolant_temp_attack_masquerade_file.py`)**:
+   - Script to process max engine coolant temperature attack masquerade files.
+   - Reads and preprocesses the CAN logs.
+   - Extracts features and generates node embeddings.
+   - Combines embeddings with signal attributes and computes average embeddings.
+   - Converts embeddings to DataFrames and saves results as CSV and PKL files.
+
+- **Process All Max Speedometer Attack Files (`process_all_max_speedometer_attack_files.py`)**:
+   - Script to process all max speedometer masquerade attack files.
+   - Reads, preprocesses, and extracts features from the CAN logs.
+   - Generates node embeddings and combines them with signal attributes.
+   - Computes average embeddings and converts them into DataFrames.
+   - Saves the results to disk as CSV and PKL files.
+
+- **Main Script (`main_script.py`)**:
+   - The main script to run experiments.
+   - Integrates various modules and functions to execute the complete workflow for detecting masquerade attacks in CAN data.
+
+- **Run Experiments (`run_experiments.py`)**:
+   - Script to execute the entire experiment pipeline.
+   - Automates data preprocessing, feature extraction, embedding generation, and result analysis.
+   - Facilitates running experiments with different configurations and datasets.
+
+## Requirements
+To install the necessary dependencies, you can use the `requirements.txt` file provided:
+
+```sh
+pip install -r requirements.txt
 
 ## Getting Started
 
