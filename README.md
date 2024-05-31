@@ -126,22 +126,22 @@ python process_all_correlated_masquerade_attack_files.py --window-size 4 --offse
 
    ```shell
 
-4.**python process_all_reverse_light_off_attack_files.py --window-size 4 --offset 4
+     python process_all_reverse_light_off_attack_files.py --window-size 4 --offset 4
 
-To process all reverse light on masquerade attack files:
+4.**To process all reverse light on masquerade attack files:
 
-shell
+   ```shell
 
-python process_all_reverse_light_on_attack_files.py --window-size 4 --offset 4
+    python process_all_reverse_light_on_attack_files.py --window-size 4 --offset 4
 
-To process max engine coolant temperature attack masquerade files:
+5. **To process max engine coolant temperature attack masquerade files:
 
-shell
+  ```shell
 
 python process_max_engine_coolant_temp_attack_masquerade_file.py --window-size 4 --offset 4
 
-To process all max speedometer masquerade attack files:
+6. **To process all max speedometer masquerade attack files:
 
-shell
+```shell
 
 python process_all_max_speedometer_attack_files.py --window-size 4 --offset 4
