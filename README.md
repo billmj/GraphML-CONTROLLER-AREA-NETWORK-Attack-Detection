@@ -94,14 +94,7 @@ Design and develop a unified framework to detect both masquerade attacks in the 
 ## Dataset
 Our framework is evaluated using the Real ORNL Automotive Dynamometer (ROAD) dataset, developed by the Oak Ridge National Laboratory (ORNL) \cite{verma2022addressing}. The ROAD dataset includes CAN data from real vehicles with verified fabrication and simulated masquerade attacks, providing a realistic environment for testing CAN security methods. The dataset includes 3.5 hours of recorded data, with 3 hours for training and 30 minutes for testing, covering various driving scenarios. It includes five masquerade attacks: correlated signal, max engine, max speedometer, reverse light off, and reverse light on attacks. For more details, refer to the [ROAD dataset paper](https://doi.org/10.1371/journal.pone.0296879).
 
-## Requirements
-To install the necessary dependencies, you can use the `requirements.txt` file provided:
 
-```sh
-pip install -r requirements.txt
-
-```sh
-pip install -r requirements.txt
 
 ## Getting Started
 
