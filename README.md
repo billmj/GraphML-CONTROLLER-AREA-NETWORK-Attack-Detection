@@ -120,7 +120,7 @@ Our framework is evaluated using the Real ORNL Automotive Dynamometer (ROAD) dat
 
    ```shell
 
-python process_all_correlated_masquerade_attack_files.py --window-size 4 --offset 4
+    python process_all_correlated_masquerade_attack_files.py --window-size 4 --offset 4
 
 5. **To process all `reverse light off masquerade attack files`:**
 
@@ -132,16 +132,5 @@ python process_all_correlated_masquerade_attack_files.py --window-size 4 --offse
 
    ```shell
 
-    python process_all_reverse_light_on_attack_files.py --window-size 4 --offset 4
+      python process_all_reverse_light_on_attack_files.py --window-size 4 --offset 4
 
- 7.**To process all `max engine coolant temperature attack masquerade files`:**
-
-  ```shell
-
-python process_max_engine_coolant_temp_attack_masquerade_file.py --window-size 4 --offset 4
-
-8. **To process all `max speedometer masquerade attack files`:**
-
-```shell
-
-python process_all_max_speedometer_attack_files.py --window-size 4 --offset 4
