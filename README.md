@@ -115,7 +115,7 @@ python ambient_dyno_drive_basic_long.py --window-size 10 --offset 10 --pkl-folde
 
 To run all benign files:
 
-shell
+```shell
 
 python process_all_files.py --window-size 4 --offset 4
 
