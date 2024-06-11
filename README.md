@@ -41,6 +41,11 @@ Design and develop a unified framework to detect both masquerade attacks in the 
    - Functions to generate node embeddings using Node2Vec.
    - Functions to generate edge embeddings.
 
+- **New Experiment Samples (`new_experiment_samples.py`)**:
+   - Functions for analyzing CAN log data using various combinations of window sizes and offsets based on the number of samples.
+   - The goal is to understand how different sample-based window sizes and offsets affect the detection and analysis of CAN network activities, both for benign and attack scenarios.
+   - This experiment aims to optimize the parameters for better anomaly detection and network activity characterization.
+
 ### Dataset:
 - **ROAD Dataset**: This dataset contains multiple hours of recorded data, with 3 hours for training and 30 minutes for testing, covering various driving scenarios. It includes five masquerade attacks: correlated signal, max engine, max speedometer, reverse light off, and reverse light on attacks. For more details, refer to the [ROAD dataset paper](https://doi.org/10.1371/journal.pone.0296879).
 
@@ -83,5 +88,19 @@ Design and develop a unified framework to detect both masquerade attacks in the 
 7. **To process all `max speedometer masquerade attack files`:**
    ```shell
    python process_all_max_speedometer_attack_files.py --window-size 4 --offset 4
+   ```
+
+### New Experiment: Sample-Based Analysis
+This new set of experiments focuses on analyzing CAN log data using various combinations of window sizes and offsets based on the number of samples, rather than time. The goal is to understand how different sample-based window sizes and offsets affect the detection and analysis of CAN network activities, both for benign and attack scenarios. This experiment aims to optimize the parameters for better anomaly detection and network activity characterization.
+
+#### Running the New Experiment:
+8. **To process new experiment samples for attack scenarios:**
+   ```shell
+   python new_experiment_samples.py --window-size 50 --offset 50
+   ```
+
+9. **To process new experiment samples for benign scenarios:**
+   ```shell
+   python new_experiment_samples.py --window-size 50 --offset 50 --attack-type benign
    ```
 
