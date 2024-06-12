@@ -86,6 +86,20 @@ Design and develop a unified framework to detect both masquerade attacks in the 
 
 - **run_experiments.py**:
   - Script to run various experiments such as process_all_files_script and process_all_attacks_script at a go on the CAN log data.
+ 
+## Installation of Dependencies
+
+To ensure that you have all the necessary Python packages and dependencies for this project, you can use the `requirements.txt` file provided in the repository. This file contains a list of all the required packages along with their specific versions.
+
+### Installing Dependencies
+
+1. **Using Conda**:
+   If you are using Conda, you can create a new environment and install the dependencies from the `requirements.txt` file by running the following commands:
+
+   ```shell
+   conda create --name your_env_name python=3.8
+   conda activate your_env_name
+   pip install -r requirements.txt
 
 ## Getting Started
 
