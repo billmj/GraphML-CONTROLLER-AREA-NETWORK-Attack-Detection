@@ -1,7 +1,9 @@
-
 # Detecting Masquerade Attacks in Controller Area Networks Using Graph Machine Learning
 
 ## Project Overview
+
+![CAN Frame](Figures/can_frame.png)
+
 
 ### Main Objective
 Design and develop a unified framework to detect both masquerade attacks in the CAN bus that can be deployed on edge devices. We aim to model CAN message streams as CAN graph messages, embedding both node and edge attributes. From this, we can train a model using normal data to detect attacks in the test dataset.
