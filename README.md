@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-![CAN Frame](Figures/can_frame.png)
+![CAN Frame](Figures/workflow.png)
 
 
 ### Main Objective
