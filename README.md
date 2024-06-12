@@ -10,7 +10,7 @@ Design and develop a unified framework to detect both masquerade attacks in the 
 - **Question:** Can we detect masquerade attacks in the CAN bus using a graph ML?
 - **Hypothesis:** 
   1. CAN messages graphs (embedding both node/edge attributes) may characterize normal/attack conditions in CAN.
-  2. Fabrication/masquerade attacks scenarios can be framed as a GNN graph classification framework.
+  2. Fabrication/masquerade attacks scenarios can be framed as graph classification framework.
 
 ### Workflow
 1. **Phase 1 - Literature Review**
@@ -48,6 +48,20 @@ Design and develop a unified framework to detect both masquerade attacks in the 
 
 ### Dataset:
 - **ROAD Dataset**: This dataset contains multiple hours of recorded data, with 3 hours for training and 30 minutes for testing, covering various driving scenarios. It includes five masquerade attacks: correlated signal, max engine, max speedometer, reverse light off, and reverse light on attacks. For more details, refer to the [ROAD dataset paper](https://doi.org/10.1371/journal.pone.0296879).
+  
+## Installation of Dependencies
+
+To ensure that you have all the necessary Python packages and dependencies for this project, you can use the `requirements.txt` file provided in the repository. This file contains a list of all the required packages along with their specific versions.
+
+### Installing Dependencies
+
+1. **Using Conda**:
+   If you are using Conda, you can create a new environment and install the dependencies from the `requirements.txt` file by running the following commands:
+
+   ```shell
+   conda create --name your_env_name python=3.8
+   conda activate your_env_name
+   pip install -r requirements.txt
 
 ## Getting Started
 
