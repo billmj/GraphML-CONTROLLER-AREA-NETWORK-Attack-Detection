@@ -83,7 +83,7 @@ Design and develop a unified framework to detect both masquerade attacks in the 
   - File containing a list of all the required packages along with their specific versions.
 
 - **run_experiments.py**:
-  - Script to run various experiments and tests on the CAN log data.
+  - Script to run various experiments such as process_all_files_script and process_all_attacks_script at a go on the CAN log data.
 
 ## Getting Started
 
