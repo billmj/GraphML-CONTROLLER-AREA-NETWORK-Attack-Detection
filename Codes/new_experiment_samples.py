@@ -2,8 +2,6 @@
 
 import os
 import argparse
-import subprocess
-import shutil
 import pandas as pd
 import numpy as np
 import networkx as nx
@@ -25,15 +23,6 @@ from utils import load_mapped_capture, find_node_with_highest_signals, save_data
 # Predefined dictionary for benign log files and their corresponding pickle folders
 BENIGN_LOG_TO_PKL = {
     "ambient_dyno_drive_basic_long.log": "road_ambient_dyno_drive_basic_long_050305_002000",
-    "ambient_dyno_drive_basic_short.log": "road_ambient_dyno_drive_basic_short_020822_030640",
-    "ambient_dyno_drive_benign_anomaly.log": "road_ambient_dyno_drive_benign_anomaly_030804_082640",
-    "ambient_dyno_drive_extended_long.log": "road_ambient_dyno_drive_extended_long_040716_134640",
-    "ambient_dyno_drive_extended_short.log": "road_ambient_dyno_drive_extended_short_021215_195320",
-    "ambient_dyno_drive_radio_infotainment.log": "road_ambient_dyno_drive_radio_infotainment_041109_063320",
-    "ambient_dyno_drive_winter.log": "road_ambient_dyno_drive_winter_030410_144000",
-    "ambient_dyno_exercise_all_bits.log": "road_ambient_dyno_exercise_all_bits_030410_144000",
-    "ambient_dyno_idle_radio_infotainment.log": "road_ambient_dyno_idle_radio_infotainment_030410_144000",
-    "ambient_dyno_reverse.log": "road_ambient_dyno_reverse_040322_190000"
 }
 
 # Predefined dictionary for attack log files and their corresponding pickle folders with attack intervals
@@ -49,8 +38,7 @@ ATTACK_LOG_TO_PKL = {
     "reverse_light_off_attack_3_masquerade.log": ("road_attack_reverse_light_off_attack_3_masquerade_080829_045320", (16.524085, 40.862015)),
     "reverse_light_on_attack_1_masquerade.log": ("road_attack_reverse_light_on_attack_1_masquerade_091205_030000", (18.929177, 38.836015)),
     "reverse_light_on_attack_2_masquerade.log": ("road_attack_reverse_light_on_attack_2_masquerade_100330_214640", (20.407134, 57.297253)),
-    "reverse_light_on_attack_3_masquerade.log": ("road_attack_reverse_light_on_attack_3_masquerade_100724_153320", (23.070278, 46.580686)),
-    "max_engine_coolant_temp_attack_masquerade.log": ("road_attack_max_engine_coolant_temp_attack_masquerade_041109_063320", (19.979078, 24.170183))
+    "reverse_light_on_attack_3_masquerade.log": ("road_attack_reverse_light_on_attack_3_masquerade_100724_153320", (23.070278, 46.580686))
 }
 
 def run_experiment(log_filepath, window_size, offset, pkl_folder, output_dir, attack_type, attack_interval=None):
@@ -92,28 +80,38 @@ def run_experiment(log_filepath, window_size, offset, pkl_folder, output_dir, at
     # Create the DataFrame from embeddings
     df_benign = create_dataframe_from_embeddings(concatenated_embeddings, log_filepath, offset, highest_signal_count, mapped_capture)
 
+    # Print the DataFrame columns to check the correct timestamp column name
+    print("DataFrame columns:", df_benign.columns)
+
+    # Print the first few rows to verify the data
+    print(df_benign.head())
+
     # Label data if it is an attack log
     if attack_interval:
         start_attack, end_attack = attack_interval
-        df_benign['Label'] = df_benign['Timestamp'].apply(lambda x: 1 if start_attack <= x <= end_attack else 0)
+        # Calculate start and end indices based on window_size and offset
+        start_index = int(start_attack * window_size / offset)
+        end_index = int(end_attack * window_size / offset)
+        df_benign['Label'] = 0  # Initialize all labels to 0
+        df_benign.loc[start_index:end_index, 'Label'] = 1  # Label the attack interval
     else:
         df_benign['Label'] = 0  # For benign logs, label everything as 0
 
-    # Display the first few rows of the DataFrame
+    # Display the first few rows of the DataFrame after labeling
     print(df_benign.head())
 
-    # Display the last few rows of the DataFrame
-    print(df_benign.iloc[-5:])
+    # Extract the base filename without extension for naming
+    base_filename = os.path.splitext(os.path.basename(log_filepath))[0]
 
-    # Save the DataFrame to a CSV file
-    output_csv_path = os.path.join(output_dir, f"{attack_type}_w{window_size}_o{offset}.csv")
-    save_dataframe_to_csv(df_benign, window_size, offset, log_filepath)
+    # Save the DataFrame to a CSV file with the specific log file name included
+    output_csv_path = os.path.join(output_dir, f"{base_filename}_w{window_size}_o{offset}.csv")
+    df_benign.to_csv(output_csv_path, index=False)
     
     # Save the DataFrame to the specific attack's folder as well
     specific_attack_output_dir = os.path.join(output_dir, attack_type, f"w{window_size}_o{offset}")
     if not os.path.exists(specific_attack_output_dir):
         os.makedirs(specific_attack_output_dir)
-    df_benign.to_csv(os.path.join(specific_attack_output_dir, f"{attack_type}_w{window_size}_o{offset}.csv"), index=False)
+    df_benign.to_csv(os.path.join(specific_attack_output_dir, f"{base_filename}_w{window_size}_o{offset}.csv"), index=False)
 
     # Save the combined embeddings to disk
     with open(os.path.join(output_dir, "combined_node_embeddings.pkl"), "wb") as f:
@@ -124,15 +122,10 @@ def main():
     parser = argparse.ArgumentParser(description='Run new CAN log experiment based on sample count.')
     parser.add_argument('--window-size', type=int, required=True, help='Number of samples in each window.')
     parser.add_argument('--offset', type=int, required=True, help='Number of samples to shift for each window.')
-    parser.add_argument('--output-dir', type=str, default=None, help='Directory to save processed files. If not provided, the default output directory will be used.')
-    parser.add_argument('--attack-type', type=str, choices=['benign', 'attack'], required=True, help='Specify whether to process benign or attack logs.')
+    parser.add_argument('--output-dir', type=str, default="C:\\Users\\willi\\CAN_experiments\\New_Experiments", help='Directory to save processed files. If not provided, the default output directory will be used.')
+    parser.add_argument('--attack-type', type=str, choices=['benign', 'attack'], default="attack", help='Specify whether to process benign or attack logs.')
 
     args = parser.parse_args()
-
-        # Ensure the output directory exists
-    if args.output_dir is None:
-        default_output_dir = "C:\\Users\\willi\\CAN_experiments\\New_Experiments"
-        args.output_dir = default_output_dir
 
     # Determine log files and directories based on attack type
     if args.attack_type == 'benign':
