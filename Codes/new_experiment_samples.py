@@ -30,7 +30,7 @@ ATTACK_LOG_TO_PKL = {
     "correlated_signal_attack_1_masquerade.log": ("road_attack_correlated_signal_attack_1_masquerade_030804_082640", (9.191851, 30.050109)),
     "correlated_signal_attack_2_masquerade.log": ("road_attack_correlated_signal_attack_2_masquerade_031128_011320", (6.830477, 28.225908)),
     "correlated_signal_attack_3_masquerade.log": ("road_attack_correlated_signal_attack_3_masquerade_040322_190000", (4.318482, 16.95706)),
-    "max_engine_coolant_temp_attack_masquerade.log": ("road_attack_max_engine_coolant_temp_attack_masquerade_041109_063320)),
+    "max_engine_coolant_temp_attack_masquerade.log": ("road_attack_max_engine_coolant_temp_attack_masquerade_041109_063320", (19.979078, 24.170183))
     "max_speedometer_attack_1_masquerade.log": ("road_attack_max_speedometer_attack_1_masquerade_060215_054000", (42.009204, 66.449011))
     "max_speedometer_attack_2_masquerade.log": ("road_attack_max_speedometer_attack_2_masquerade_060611_002640", (16.009225, 47.408246)),
     "max_speedometer_attack_3_masquerade.log": ("road_attack_max_speedometer_attack_3_masquerade_061004_181320", (9.516489, 70.587285)),
