@@ -200,4 +200,6 @@ This new set of experiments focuses on analyzing CAN log data using various comb
    ```shell
    python new_experiment_samples.py --window-size 50 --offset 50 --attack-type benign
    ```
+### Acknowledgement
 
+This manuscript has been authored by UT-Battelle, LLC under Contract No. DE-AC05-00OR22725 with the U.S. Department of Energy. The publisher, by accepting the article for publication, acknowledges that the U.S. Government retains a non-exclusive, paid-up, irrevocable, world-wide license to publish or reproduce the published form of the manuscript, or allow others to do so, for U.S. Government purposes. The DOE will provide public access to these results in accordance with the DOE Public Access Plan (http://energy.gov/downloads/doe-public-access-plan). This research was sponsored in part by Oak Ridge National Laboratory’s (ORNL’s) Laboratory Directed Research and Development program through the Sustainable Research Pathways (SRP) program and by the DOE. This research is also partially funded by US Department of Energy Award No. DE-FE0032089. There was no additional external funding received for this study. The funders had no role in study design, data collection and analysis, decision to publish, or preparation of this manuscript.
