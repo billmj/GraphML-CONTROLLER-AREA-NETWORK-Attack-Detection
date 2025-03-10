@@ -162,29 +162,60 @@ To ensure that you have all the necessary Python packages and dependencies for t
    ```
 
 #### Attack Files:
-3. **To process all `correlated masquerade attack files`:**
+3. **To process all `correlated masquerade attack files` in TTW-only mode:**
    ```shell
-   python process_all_correlated_masquerade_attack_files.py --window-size 4 --offset 4
+   python process_all_correlated_masquerade_attack_files.py --mode ttw-only --window-size 2 --offset 1
    ```
 
-4. **To process all `reverse light off masquerade attack files`:**
+   **To process all `correlated masquerade attack files` in full-pipeline mode:**
    ```shell
-   python process_all_reverse_light_off_attack_files.py --window-size 4 --offset 4
+   python process_all_correlated_masquerade_attack_files.py --mode full-pipeline --window-size 2 --offset 1
    ```
 
-5. **To process all `reverse light on masquerade attack files`:**
+4. **To process all `reverse light off masquerade attack files` in TTW-only mode:**
    ```shell
-   python process_all_reverse_light_on_attack_files.py --window-size 4 --offset 4
+   python process_all_reverse_light_off_attack_files.py --mode ttw-only --window-size 2 --offset 1
    ```
 
-6. **To process all `max engine coolant temperature masquerade attack files`:**
+   **To process all `reverse light off masquerade attack files` in full-pipeline mode:**
    ```shell
-   python process_max_engine_coolant_temp_attack_masquerade_file.py --window-size 4 --offset 4
+   python process_all_reverse_light_off_attack_files.py --mode full-pipeline --window-size 2 --offset 1
    ```
 
-7. **To process all `max speedometer masquerade attack files`:**
+5. **To process all `reverse light on masquerade attack files` in TTW-only mode:**
    ```shell
-   python process_all_max_speedometer_attack_files.py --window-size 4 --offset 4
+   python process_all_reverse_light_on_attack_files.py --mode ttw-only --window-size 2 --offset 1
+   ```
+
+   **To process all `reverse light on masquerade attack files` in full-pipeline mode:**
+   ```shell
+   python process_all_reverse_light_on_attack_files.py --mode full-pipeline --window-size 2 --offset 1
+   ```
+
+6. **To process all `max engine coolant temperature masquerade attack files` in TTW-only mode:**
+   ```shell
+   python process_max_engine_coolant_temp_attack_masquerade_file.py --mode ttw-only --window-size 2 --offset 1
+   ```
+
+   **To process all `max engine coolant temperature masquerade attack files` in full-pipeline mode:**
+   ```shell
+   python process_max_engine_coolant_temp_attack_masquerade_file.py --mode full-pipeline --window-size 2 --offset 1
+   ```
+
+7. **To process all `max speedometer masquerade attack files` in TTW-only mode:**
+   ```shell
+   python process_all_max_speedometer_attack_files.py --mode ttw-only --window-size 2 --offset 1
+   ```
+
+   **To process all `max speedometer masquerade attack files` in full-pipeline mode:**
+   ```shell
+   python process_all_max_speedometer_attack_files.py --mode full-pipeline --window-size 2 --offset 1
+   ```
+
+8. **To run TTW calculations for all attack types (TTW-only mode):**
+   ```shell
+   python run_all_ttw_attacks.py
+
    ```
 
 ### New Experiment: Sample-Based Analysis
