@@ -217,6 +217,19 @@ To ensure that you have all the necessary Python packages and dependencies for t
    python run_all_ttw_attacks.py
 
    ```
+### Time-to-Window (TTW) Metrics
+Time-to-Window (TTW) is a performance metric used to evaluate the computational efficiency of intrusion detection systems (IDS) in real-time environments. It measures the time taken to process a sliding window of CAN messages and make a detection decision. The formula for TTW is:
+
+\[
+\text{TTW} = \frac{\text{Total Detection Time}}{\text{Number of Windows}}
+\]
+
+- **Total Detection Time**: The total time taken to process all windows in the dataset.
+- **Number of Windows**: The total number of sliding windows generated from the dataset.
+
+TTW provides insights into the real-time feasibility of the IDS, especially in resource-constrained environments like vehicles.
+
+---
 
 ### New Experiment: Sample-Based Analysis
 This new set of experiments focuses on analyzing CAN log data using various combinations of window sizes and offsets based on the number of samples, rather than time. The goal is to understand how different sample-based window sizes and offsets affect the detection and analysis of CAN network activities, both for benign and attack scenarios. This experiment aims to optimize the parameters for better anomaly detection and network activity characterization.
