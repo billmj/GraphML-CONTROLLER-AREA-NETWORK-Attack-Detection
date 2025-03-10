@@ -1,30 +1,23 @@
+#process_max_engine_coolant_temp_attack_masquerade_file.py
+
 import subprocess
 import os
 import argparse
-import shutil
 
 def main():
-    # Set up argument parsing
     parser = argparse.ArgumentParser(description='Process the CAN log file for max engine coolant temp attack masquerade.')
+    parser.add_argument('--mode', type=str, required=True, choices=['ttw-only', 'full-pipeline'],
+                        help='Mode to run: "ttw-only" for TTW calculation, "full-pipeline" for full pipeline.')
     parser.add_argument('--window-size', type=float, required=True, help='Size of the window for slicing data.')
     parser.add_argument('--offset', type=float, required=True, help='Offset for slicing data.')
-    
-    # New: Optional argument for specifying the output directory
-    parser.add_argument('--output-dir', type=str, default=None, help='Directory to save processed files. If not provided, the default output directory will be used.')
+    parser.add_argument('--output-dir', type=str, default="C:\\Users\\willi\\CAN_experiments\\Specific_Attack_Types",
+                        help='Directory to save processed files. If not provided, the default output directory will be used.')
 
     args = parser.parse_args()
 
-    # Ensure the output directory exists
-    if args.output_dir is None:
-        # Define the default output directory
-        default_output_dir = "C:\\Users\\willi\\CAN_experiments\\Specific_Attack_Types"
-        output_dir = default_output_dir
-    else:
-        output_dir = args.output_dir
-
     # Create a folder based on window size and offset inside the output directory
     folder_name = f"max_engine_coolant_temp_w{int(args.window_size)}_o{int(args.offset)}"
-    output_dir = os.path.join(output_dir, folder_name)
+    output_dir = os.path.join(args.output_dir, folder_name)
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
@@ -38,26 +31,30 @@ def main():
     # Construct the full path to the log file
     log_filepath = os.path.join(log_directory, log_file)
 
+    # Determine which script to run based on the mode
+    if args.mode == 'ttw-only':
+        script_name = "ttw_only.py"
+    elif args.mode == 'full-pipeline':
+        script_name = "ambient_dyno_drive_basic_long.py"
+
     # Printing the name of the dataset being processed
-    print(f"Processing {log_file}...")
+    print(f"Processing {log_file} in {args.mode} mode...")
 
-    # Updated subprocess.run call to include --output-dir
-    subprocess.run([
-        "python", 
-        "ambient_dyno_drive_basic_long.py", 
-        "--window-size", str(args.window_size), 
-        "--offset", str(args.offset), 
-        "--pkl-folder", pkl_folder, 
-        "--output-dir", output_dir,  # Pass the output directory as an argument
+    # Prepare the command to run
+    command = [
+        "python", script_name,
+        "--window-size", str(args.window_size),
+        "--offset", str(args.offset),
+        "--pkl-folder", pkl_folder,
         log_filepath
-    ])
+    ]
 
-    # After the process is complete, move or copy the CSV files to the desired output directory
-    # Assuming the CSV files are generated in the current directory
-    for filename in os.listdir("."):
-        if filename.endswith(".csv"):
-            # Move or copy the CSV file to the output directory
-            shutil.move(filename, output_dir)  # Use shutil.copy if you want to copy instead of moving
+    # Add --output-dir only in full-pipeline mode
+    if args.mode == 'full-pipeline':
+        command.extend(["--output-dir", output_dir])
+
+    # Run the appropriate script
+    subprocess.run(command)
 
 if __name__ == "__main__":
     main()
