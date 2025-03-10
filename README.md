@@ -131,6 +131,16 @@ road/
 
 - **run_experiments.py**:
   - Script to run various experiments such as process_all_files_script and process_all_attacks_script at a go on the CAN log data.
+- **ttw_calculations.py**:
+  - Script to calculate Time-to-Window (TTW) metrics for each sliding window.
+
+- **ttw_only.py**:
+  - Script to run TTW calculations without generating embeddings.
+
+- **run_all_ttw_attacks.py**:
+  - Script to run TTW calculations for all attack types (correlated signal, max speedometer, reverse light off, reverse light on, and max engine coolant temp).
+
+---
  
 ## Installation of Dependencies
 
