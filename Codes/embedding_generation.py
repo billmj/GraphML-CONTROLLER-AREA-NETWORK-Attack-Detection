@@ -5,7 +5,10 @@ from utils import extract_mean_std_for_id
 def generate_node_embeddings(all_graphs):
     all_node_embeddings = []
     for idx, G in enumerate(tqdm(all_graphs, desc="Generating Node Embeddings")):
+        # Use vector_size instead of dimensions
         node2vec = Node2Vec(G, dimensions=64, walk_length=15, num_walks=100, workers=19, p=1.5, q=0.5)
+        
+        # Fit the model with the correct parameters
         model = node2vec.fit(window=10, min_count=1, batch_words=7)
         
         node_embeddings = {}
