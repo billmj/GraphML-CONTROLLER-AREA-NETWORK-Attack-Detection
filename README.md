@@ -1,21 +1,6 @@
 # Detecting Masquerade Attacks in Controller Area Networks Using Graph Machine Learning
 
-## Citation
 
-If you use this code or the associated research in your work, please cite our paper:
-
-```bibtex
-@ARTICLE{Marfo:2025:Detecting:Masquerade:Attacks:GraphML,
-  author={Marfo, William and Moriano, Pablo and Tosh, Deepak K. and Moore, Shirley V.},
-  journal={IEEE Transactions on Information Forensics and Security},
-  title={Detecting Masquerade Attacks in Controller Area Networks Using Graph Machine Learning},
-  year={2025},
-  volume={20},
-  number={},
-  pages={13127-13142},
-  keywords={Accuracy;Controller area networks;Time series analysis;Roads;Training;Protocols;Fabrication;Computer crime;Suspensions (mechanical systems);Payloads;Controller area networks;intrusion detection systems;graph ML;masquerade attacks},
-  doi={10.1109/TIFS.2025.3636019}
-}
 
 
 
