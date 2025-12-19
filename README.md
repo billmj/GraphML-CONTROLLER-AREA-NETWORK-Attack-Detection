@@ -1,8 +1,22 @@
 # Detecting Masquerade Attacks in Controller Area Networks Using Graph Machine Learning
 
+## Citation
 
+If you use this code or the associated research in your work, please cite our paper:
 
-
+```bibtex
+@ARTICLE{Marfo:2025:Detecting:Masquerade:Attacks:GraphML,
+  author={Marfo, William and Moriano, Pablo and Tosh, Deepak K. and Moore, Shirley V.},
+  journal={IEEE Transactions on Information Forensics and Security},
+  title={Detecting Masquerade Attacks in Controller Area Networks Using Graph Machine Learning},
+  year={2025},
+  volume={20},
+  number={},
+  pages={13127--13142},
+  keywords={Accuracy;Controller area networks;Time series analysis;Roads;Training;Protocols;Fabrication;Computer crime;Suspensions (mechanical systems);Payloads;Controller area networks;intrusion detection systems;graph ML;masquerade attacks},
+  doi={10.1109/TIFS.2025.3636019}
+}
+```
 
 ## Project Overview
 
@@ -10,13 +24,13 @@
 
 
 ### Main Objective
-Design and develop a unified framework to detect both masquerade attacks in the CAN bus that can be deployed on edge devices. We aim to model CAN message streams as CAN graph messages, embedding both node and edge attributes. From this, we can train a model using normal data to detect attacks in the test dataset.
+Design and develop a unified framework to detect masquerade attacks in the CAN bus that can be deployed on edge devices. We aim to model CAN message streams as CAN graph messages, embedding both node and edge attributes. From this, we can train a model using normal data to detect attacks in the test dataset.
 
 ### Key Questions & Hypothesis
-- **Question:** Can we detect masquerade attacks in the CAN bus using a graph ML?
-- **Hypothesis:** 
-  1. CAN messages graphs (embedding both node/edge attributes) may characterize normal/attack conditions in CAN.
-  2. Fabrication/masquerade attacks scenarios can be framed as graph classification framework.
+- **Question:** Can we detect masquerade attacks in the CAN bus using Graph ML?
+- **Hypothesis:**
+  1. CAN message graphs (embedding both node/edge attributes) may characterize normal/attack conditions in CAN.
+  2. Fabrication/masquerade attack scenarios can be framed as a graph classification framework.
 
 ### Workflow
 1. **Phase 1 - Literature Review**
@@ -33,10 +47,10 @@ Design and develop a unified framework to detect both masquerade attacks in the 
    - Train the Graph ML framework for IDS in CAN graph messages.
    - Test the trained GNN framework on attack captures and compute classification metrics.
 
+### Dataset
+- **ROAD Dataset:** This dataset contains multiple hours of recorded data, with 3 hours for training and 30 minutes for testing, covering various driving scenarios. It includes five masquerade attacks: correlated signal, max engine, max speedometer, reverse light off, and reverse light on attacks. For more details, refer to the [ROAD dataset paper](https://doi.org/10.1371/journal.pone.0296879).
 
-
-### Dataset:
-- **ROAD Dataset**: This dataset contains multiple hours of recorded data, with 3 hours for training and 30 minutes for testing, covering various driving scenarios. It includes five masquerade attacks: correlated signal, max engine, max speedometer, reverse light off, and reverse light on attacks. For more details, refer to the [ROAD dataset paper](https://doi.org/10.1371/journal.pone.0296879). Here is a detailed tree structure for the dataset used in this project: 
+Here is a detailed tree structure for the dataset used in this project:
 
 ```
 road/
