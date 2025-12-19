@@ -14,7 +14,11 @@ If you use this code or the associated research in your work, please cite our pa
   number={},
   pages={13127-13142},
   keywords={Accuracy;Controller area networks;Time series analysis;Roads;Training;Protocols;Fabrication;Computer crime;Suspensions (mechanical systems);Payloads;Controller area networks;intrusion detection systems;graph ML;masquerade attacks},
-  doi={10.1109/TIFS.2025.3636019}}
+  doi={10.1109/TIFS.2025.3636019}
+}
+
+
+
 ## Project Overview
 
 ![CAN Frame](Figures/workflow.png)
